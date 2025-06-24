@@ -1,0 +1,168 @@
+📘 SQL Tasks & Descriptions
+
+✅ Task 1 – Count Cities in the USA
+
+SELECT COUNT(*) AS total_cities FROM city WHERE CountryCode = 'USA';
+
+Purpose: Find how many cities are listed in the USA.
+Skill: Filtering with WHERE and aggregation using COUNT().
+
+✅ Task 2 – Country with the Highest Life Expectancy
+
+SELECT Name, LifeExpectancy FROM country ORDER BY LifeExpectancy DESC LIMIT 1;
+
+Purpose: Identify the country where people live the longest.
+Skill: Ordering data and selecting top records with LIMIT.
+
+✅ Task 3 – Cities Containing "New"
+
+SELECT Name, CountryCode FROM city WHERE Name LIKE '%New%';
+
+Purpose: Explore naming patterns of cities, especially those starting with "New".
+Skill: Pattern matching using LIKE.
+
+✅ Task 4 – Top 10 Most Populous Cities
+
+SELECT Name, CountryCode, Population FROM city ORDER BY Population DESC LIMIT 10;
+
+Purpose: Get the biggest urban centers globally by population.
+Skill: Sorting and limiting large datasets.
+
+✅ Task 5 – Cities with Populations Over 2 Million
+
+SELECT Name, CountryCode, Population FROM city WHERE Population > 2000000 ORDER BY Population DESC;
+
+Purpose: Analyze large cities above a population threshold.
+Skill: Numeric filtering and descending order.
+
+✅ Task 6 – Cities Beginning with "Be"
+
+SELECT Name, CountryCode FROM city WHERE Name LIKE 'Be%';
+
+Purpose: Check for naming trends and identify regions with common prefixes.
+Skill: Pattern matching with wildcard.
+
+✅ Task 7 – Mid-Sized Cities
+
+SELECT Name, CountryCode, Population FROM city WHERE Population BETWEEN 500000 AND 1000000 ORDER BY Population DESC;
+
+Purpose: Identify medium-sized cities for balanced development insights.
+Skill: Range filtering using BETWEEN.
+
+✅ Task 8 – Alphabetical City Listing
+
+SELECT Name, CountryCode FROM city ORDER BY Name ASC;
+
+Purpose: Display cities alphabetically.
+Skill: Sorting.
+
+✅ Task 9 – Most Populous City
+
+SELECT Name, Population FROM city ORDER BY Population DESC LIMIT 1;
+
+Purpose: Find the city with the highest population.
+Skill: Data extraction and limit-based filtering.
+
+✅ Task 10 – City Name Frequency
+
+SELECT Name, COUNT(*) AS Frequency FROM city GROUP BY Name ORDER BY Name ASC;
+
+Purpose: See how many cities share the same name.
+Skill: Grouping and aggregation.
+
+✅ Task 11 – Least Populous City
+
+SELECT Name, Population FROM city ORDER BY Population ASC LIMIT 1;
+
+Purpose: Identify the smallest city by population.
+Skill: Sorting in ascending order.
+
+✅ Task 12 – Most Populous Country
+
+SELECT Name, Population FROM country ORDER BY Population DESC LIMIT 1;
+
+Purpose: Determine the country with the largest population.
+Skill: Basic country-level aggregation.
+
+✅ Task 13 – Capital City of Spain
+
+SELECT city.Name FROM city JOIN country ON city.ID = country.Capital WHERE country.Name = 'Spain';
+
+Purpose: Use foreign keys to identify Spain’s capital.
+Skill: Joins and filtering by country.
+
+✅ Task 14 – Cities in Europe
+
+SELECT city.Name, country.Name AS Country FROM city JOIN country ON city.CountryCode = country.Code WHERE country.Continent = 'Europe' ORDER BY city.Name ASC;
+
+Purpose: List all cities within European countries.
+Skill: Joins and region-based filtering.
+
+✅ Task 15 – Average Population per Country
+
+SELECT city.CountryCode, country.Name, AVG(city.Population) AS AvgPopulation
+FROM city
+JOIN country ON city.CountryCode = country.Code
+GROUP BY city.CountryCode, country.Name
+ORDER BY AvgPopulation DESC;
+
+Purpose: Evaluate average city size by country.
+Skill: Aggregation and grouping with AVG().
+
+✅ Task 16 – Largest Capital Cities
+
+SELECT city.Name AS Capital, country.Name AS Country, city.Population
+FROM City city
+JOIN Country country ON city.ID = country.Capital
+ORDER BY city.Population DESC;
+
+Purpose: Rank capital cities by their population.
+Skill: Foreign key joins and sorting.
+
+✅ Task 17 – Countries with Lowest Population Density
+
+SELECT Name AS Country, Population, SurfaceArea, (Population / SurfaceArea) AS PopulationDensity
+FROM Country
+WHERE SurfaceArea > 0
+ORDER BY PopulationDensity ASC LIMIT 20;
+
+Purpose: Identify large but sparsely populated countries.
+Skill: Calculated fields and sorting by custom metrics.
+
+✅ Task 18 – High GDP per Capita Cities
+
+SELECT c.Name AS City, c.Population, co.GNP, (co.GNP / c.Population) AS GDP_per_Capita
+FROM city c
+INNER JOIN country co ON c.CountryCode = co.Code
+WHERE co.GNP IS NOT NULL
+AND c.Population IS NOT NULL
+AND c.Population > 0
+AND co.GNP / c.Population > (
+    SELECT AVG(co.GNP / c.Population)
+    FROM city c INNER JOIN country co ON c.CountryCode = co.Code
+    WHERE co.GNP IS NOT NULL AND c.Population IS NOT NULL AND c.Population > 0
+);
+
+Purpose: List cities in countries with above-average GDP per capita.
+Skill: Joins, subqueries, conditional math, and data cleansing.
+
+✅ Task 19 – Cities Ranked 31 to 40 by Population
+
+Option 1 – With OFFSET:
+
+SELECT Name AS City, CountryCode, Population
+FROM City
+ORDER BY Population DESC
+LIMIT 10 OFFSET 30;
+
+Option 2 – With ROW_NUMBER():
+
+SELECT *
+FROM (
+    SELECT *, ROW_NUMBER() OVER (ORDER BY Population DESC) AS RowNum
+    FROM city
+) AS Cities
+WHERE RowNum BETWEEN 31 AND 40;
+
+Purpose: Implement paging — useful for data tables or dashboards.
+Skill: Window functions or limit-offset pagination.
